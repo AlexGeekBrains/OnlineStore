@@ -15,15 +15,11 @@ public class ProductRepository {
     @PostConstruct
     public void init() {
         products = new ArrayList<>(Arrays.asList(
-                new Product(1, "Potatoes", 20.04f),
-                new Product(2, "Milk", 100.55f),
-                new Product(3, "Eggs", 50.78f),
-                new Product(4, "Pancake", 72.40f),
-                new Product(5, "Paper", 18.25f)));
-    }
-
-    public Product findById(int id) {
-        return products.stream().filter(p -> p.getId() == id).findFirst().orElseThrow(() -> new RuntimeException("product not found"));
+                new Product(1L, "Potatoes", 20.04f),
+                new Product(2L, "Milk", 100.55f),
+                new Product(3L, "Eggs", 50.78f),
+                new Product(4L, "Pancake", 72.40f),
+                new Product(5L, "Paper", 18.25f)));
     }
 
     public List<Product> getAllProducts() {
@@ -32,5 +28,13 @@ public class ProductRepository {
 
     public void addProduct(Product product) {
         products.add(product);
+    }
+
+    public void deleteProductById(Long id) {
+        products.removeIf(product -> product.getId().equals(id));
+    }
+
+    public Product findProductById(Long id) {
+        return products.stream().filter(product -> product.getId().equals(id)).findFirst().orElseThrow(() -> new RuntimeException("product not found"));
     }
 }
