@@ -26,8 +26,8 @@ public class ProductService {
         return productRepository.findById(id);
     }
 
-    public void addProduct(Product product) {
-        productRepository.save(product);
+    public Product addProduct(Product product) {
+        return productRepository.save(product);
     }
 
     @Transactional
@@ -39,11 +39,11 @@ public class ProductService {
         return productRepository.findAllByCostGreaterThan(minCost);
     }
 
-    public  List<Product>lessThanMaxCost(Integer maxCost){
+    public List<Product> lessThanMaxCost(Integer maxCost) {
         return productRepository.findAllByCostLessThan(maxCost);
     }
 
-    public  List<Product>findAllByCostBetween(Integer minCost, Integer maxCost){
+    public List<Product> findAllByCostBetween(Integer minCost, Integer maxCost) {
         return productRepository.findAllByCostBetween(minCost, maxCost);
     }
 }

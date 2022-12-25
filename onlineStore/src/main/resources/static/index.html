@@ -15,7 +15,7 @@
 
 <div class="container" ng-controller="productController">
     <h3>Список товаров</h3>
-    <table class="table table-hover" cellpadding="0" cellspacing="0">
+    <table class="table table-hover">
         <tr>
             <td>ID</td>
             <td>Наименование товара</td>
@@ -37,24 +37,34 @@
         </tr>
         </tbody>
     </table>
-</div>
 
-
-<body>
-<div class="add" >
-    <div class="container_form">
-        <h4>ADD Product</h4>
-        <form action="/store/products/add" method="POST">
-            <div>Product name</div>
-            <input type="text" placeholder="Your product name" name="title"><br>
-            <div>Cost</div>
-            <input type="text" placeholder="Your product cost" name="cost"><br>
-            <br>
-            <button class="button_push" type="submit">SUBMIT</button>
-        </form>
+    <div class="add" >
+        <div class="container_form">
+            <h4>ADD Product</h4>
+                <div>Product name</div>
+                <input type="text" placeholder="Your product name" name="title" ng-model="product.title" ><br>
+                <div>Cost</div>
+                <input type="number" placeholder="Your product cost" name="cost" ng-model="product.cost"><br>
+                <br>
+                <button class="btn btn-primary" ng-click = "addProduct(product)" > Добавить </button>
+        </div>
     </div>
+
+    <p></p>
+    <h3>Отфильтровать товары</h3>
+    <form novalidate ng-submit="filterProducts()">
+        <input class = "form-control" type ="number" placeholder = "минимальная цена" ng-model="minCost" >
+        <p></p>
+        <input class = "form-control" type ="number" placeholder = "максимальная цена" ng-model="maxCost" >
+        <p></p>
+        <button type="submit" class="btn btn-primary">отфильтровать</button>
+
+    </form>
 </div>
-</body>
+
+
+
+
 
 </body>
 </html>
