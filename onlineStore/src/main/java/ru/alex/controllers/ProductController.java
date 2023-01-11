@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import ru.alex.converters.ProductConverter;
 import ru.alex.data.Product;
 import ru.alex.dto.ProductDto;
 import ru.alex.services.ProductService;
@@ -14,6 +15,7 @@ import ru.alex.services.ProductService;
 @RequestMapping("api/v1/products")
 public class ProductController {
     private final ProductService productService;
+    private final ProductConverter productConverter;
 
     @GetMapping()
     public Page<ProductDto> showProducts(
@@ -25,7 +27,7 @@ public class ProductController {
         if (page < 1) {
             page = 1;
         }
-        return productService.find(minCost, maxCost, partTitle, page).map(ProductDto::new);
+        return productService.find(minCost, maxCost, partTitle, page).map(productConverter::entityToDto);
     }
 
     @DeleteMapping()
@@ -35,7 +37,8 @@ public class ProductController {
 
     @GetMapping("/{id}")
     public ProductDto findById(@PathVariable Long id) {
-        return productService.findById(id).map(ProductDto::new).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        return productConverter.entityToDto(productService.findById(id).orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.NOT_FOUND)));
     }
 
     @GetMapping("/change_cost")
@@ -46,11 +49,11 @@ public class ProductController {
     @PostMapping()
     public ProductDto addProduct(@RequestBody Product product) {
         product.setId(null);
-        return new ProductDto(productService.saveProduct(product));
+        return productConverter.entityToDto(productService.saveProduct(product));
     }
 
     @PutMapping()
     public ProductDto updateProduct(@RequestBody Product product) {
-        return new ProductDto(productService.saveProduct(product));
+        return productConverter.entityToDto(productService.saveProduct(product));
     }
 }

@@ -50,5 +50,34 @@ angular.module('app', []).controller('productController', function ($scope, $htt
         });
     }
 
+    $scope.loadCart = function () {
+        $http.get(contextPath + '/carts')
+            .then(function (response) {
+                $scope.CartList = response.data;
+            });
+    };
+
+    $scope.addToCart = function (productId) {
+        $http({
+            url: contextPath + '/carts/add',
+            method: 'GET',
+            params: {
+                productId: productId,
+            }
+        }).then(function (response) {
+            $scope.loadCart();
+        });
+    }
+
+    $scope.deleteProductFromCart = function (productId) {
+        $http({
+            url: contextPath + '/carts/remove/' + productId,
+            method: 'GET',
+        }).then(function (response) {
+            $scope.loadCart();
+        });
+    }
+
     $scope.loadProducts();
+    $scope.loadCart();
 });
