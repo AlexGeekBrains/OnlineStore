@@ -1,5 +1,9 @@
-angular.module('app', []).controller('productController', function ($scope, $http) {
+angular.module('app', ['ngStorage']).controller('productController', function ($scope, $rootScope, $http, $localStorage) {
     const contextPath = 'http://localhost:8080/store/api/v1';
+
+    if ($localStorage.webMarketUser) {
+        $http.defaults.headers.common.Authorization = 'Bearer ' + $localStorage.webMarketUser.token;
+    }
 
     $scope.loadProducts = function (pageIndex = 1) {
         $http({
@@ -77,6 +81,43 @@ angular.module('app', []).controller('productController', function ($scope, $htt
             $scope.loadCart();
         });
     }
+
+    $scope.tryToAuth = function () {
+        $http.post('http://localhost:8080/store/auth', $scope.user)
+            .then(function successCallback(response) {
+                if (response.data.token) {
+                    $http.defaults.headers.common.Authorization = 'Bearer ' + response.data.token;
+                    $localStorage.webMarketUser = {username: $scope.user.username, token: response.data.token};
+
+                    $scope.user.username = null;
+                    $scope.user.password = null;
+                }
+            }, function errorCallback(response) {
+            });
+    };
+
+    $scope.tryToLogout = function () {
+        $scope.clearUser();
+        if ($scope.user.username) {
+            $scope.user.username = null;
+        }
+        if ($scope.user.password) {
+            $scope.user.password = null;
+        }
+    };
+
+    $scope.clearUser = function () {
+        delete $localStorage.webMarketUser;
+        $http.defaults.headers.common.Authorization = '';
+    };
+
+    $rootScope.isUserLoggedIn = function () {
+        if ($localStorage.webMarketUser) {
+            return true;
+        } else {
+            return false;
+        }
+    };
 
     $scope.loadProducts();
     $scope.loadCart();
